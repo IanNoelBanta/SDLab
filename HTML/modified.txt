@@ -1,0 +1,9 @@
+header
+layout
+index
+modules.etc
+
+sticky navbar on scroll
+responsive
+fix animations
+middle part fixing

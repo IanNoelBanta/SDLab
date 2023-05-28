@@ -1,0 +1,308 @@
+<!-- Header 1 -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<header id="header" class="bg-white position-relative">
+    
+    <nav class="header-2 navbar navbar-expand-xl navbar-light   py-2 bg-navbar">
+ 
+                <div class="text-center text-sm-right">
+                        <div class="row mt-3 mt-sm-0">
+                            <div class="col-12 d-flex align-items-center">
+
+                            </div>
+                            <div class="col-12 col-md-6 ">
+                                <div class="dropdown  d-xl-inline-block mt-3 mt-lg-0">
+                                    {% if basket.packages|length > 0 %}
+                                    <button class="btn btn-primary dropdown-toggle d-block d-lg-inline-block w-100" type="button"
+                                            id="basketDropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-shopping-basket mr-2"></i>
+                                        <strong>{{ _p(":count item for :amount :currency", basket.packages|length, {'count' :
+                                            basket.packages|length, 'amount' : basket.price|money, 'currency' : basket.currency})
+                                            }}</strong>
+                                    </button>
+                                    <div id="basket-dropdown" class="dropdown-menu dropdown-menu-left" aria-labelledby="basketDropdownButton">
+                                        <div class="">
+                                            <div class="row p-3">
+                                                <div class="col-12">
+                                                    <table class="table table-striped rounded border mb-0">
+                                                        <tbody>
+                                                        {% for package in basket.packages %}
+                                                        <tr>
+                                                            <td>{{ package.name[:25] }}</td>
+                                                            <td>{{ package.price|money }} <small>{{ basket.currency }}</small></td>
+                                                            <td class="text-right">
+                                                                <a href="/checkout/packages/remove/{{ package.id }}" class="btn-link text-danger border-0"><i
+                                                                        class="fas fa-times"></i>
+
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="row align-items-center bg-light py-3 m-0 border-top">
+                                                <div class="col-12 col-sm-6"> <strong>{{ __("Total") }}: </strong> {{
+                                                    basket.price|money }} <small>{{ basket.currency }}</small></div>
+                                                <div class="col-12 col-sm-6 text-right">
+                                                    <a class="btn btn-primary" href="/checkout/basket">
+                                                        {{__("Checkout") }}</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% else %}
+
+                                    <button class="btn btn-primary" disabled="disabled"><i class="icon-shopping-cart icon-white"></i>
+                                        {{ _p(":count items for :amount :currency", basket.packages|length, {'count' :
+                                        basket.packages|length, 'amount' : basket.price|money, 'currency' : basket.currency}) }}
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#mobileSupportedContent"
+                        aria-controls="mobileSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="icon-bar top-bar"></span>
+                    <span class="icon-bar middle-bar"></span>
+                    <span class="icon-bar bottom-bar"></span>
+                </button>
+                <div class="navbar-collapse mt-4 mt-lg-0 collapse" id="mobileSupportedContent">
+
+                    <ul class="navbar-nav text-uppercase flex-wrap my-2 my-xl-0">
+
+                        <li class="nav-item {% if page.category == "index" %}active{% endif %}">
+                        <a class="nav-link" href="/">{{ __("Home") }}</a>
+                        </li>
+
+                        {% for category in store.categories %}
+                        {% if category.subcategories|length > 0 %}
+                        <li class="nav-item dropdown dropdown {% if category.active %}active{% endif %}">
+                            <a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false">{{ category.name
+                                }} </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                {% for subcategory in category.subcategories %}
+                                <a class="dropdown-item" href="/category/{{ subcategory.id }}">{{ subcategory.name
+                                    }}</a>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                        <li class="nav-item {% if category.active %}active{% endif %}"><a class="nav-link" href="/category/{{ category.id }}">{{
+                            category.name }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+
+                        {% for page in store.pages %}
+                        <li class="nav-item {% if page.active %}active{% endif %}"><a class="nav-link" href="/{{ page.slug }}">{{
+                            page.title }}</a></li>
+                        {% endfor %}
+
+                        {% if basket.packages|length > 0 %}
+                        <li class="visible-xs {% if page.category == " checkout" %}active{% endif %}"><a class="nav-link"
+                                                                                                         href="/checkout/basket">{{
+                        __("Checkout") }}</a></li>
+                        {% endif %}
+
+                    </ul>
+                </div>
+            </div>
+            <div class="bg-topbar text-white py-2">
+        <div class="container">
+            <div class="row no-gutters align-items-center">
+                <div class="col-8 col-md-4 col-lg-4 text-heading-font">
+                    {% if basket.username %}
+                        <strong>{{ basket.ign }}</strong>
+                        <a href="/checkout/logout" class="text-white text-capitalize ml-3"><span class="d-none d-sm-inline">{{ __("Logout") }}</span><i class="fa fa-sign-out-alt d-sm-none"></i></a>
+                    {% else %}
+                        <p class="loginLink text-white text-capitalize ml-3" >{{ __("Login") }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="col-4 col-md-6 ml-lg-auto">
+                    <div class="dropdown text-right">
+                        <button class="btn btn-link text-white dropdown-toggle p-0 font-weight-bold" type="button" id="currencyButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ basket.currency }}
+                            <span><i class="fa-solid fa-angle-down"></i></span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="currencyButton">
+                            {% for currency in store.currencies %}
+                                {% if currency.code in [store.currency, "AUD", "BRL", "CAD", "DKK", "EUR", "NOK", "NZD", "GBP", "SEK", "USD", "PLN"] %}
+                                    <a class="dropdown-item  {% if basket.currency==currency.code %}active {% endif %}>" href="?currency={{ currency.code }}">{{ currency.code }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                     <div class="col-12 col-sm-9 px-0">
+                    
+    </nav>
+
+
+
+
+
+    <div class="d-none d-xl-block">
+
+            <div class="container middle-header">
+                    <div class="header-discord">
+                                   <div class='textbox'>
+                            <p>Discord server</p>
+                            <p>Join 182 other members</p>
+                        </div>
+                        <i class="fa-brands fa-discord"></i>
+                        
+                    </div>
+                    
+                    <div class="header-logo">
+                                            <a href="/" class="navbar-brand d-flex align-items-center text-primary text-heading-font mr-0">
+                        <img class="mx-auto mx-sm-0 logo-img" src="{{ store.logo }}" />
+                    </a>
+                    </div>
+                    <div class="header-game">
+                        <i class="fa-solid fa-gamepad"></i>
+                        <div class='textbox'>
+                            <p>Play now !</p>
+                            <p>Join 50 other players</p>
+                        </div>
+          </div>
+                    
+
+
+        </div>
+        <div class="popup-login">
+            
+            <h1>Login </h1>
+            
+            <form method="post">
+            <div class="username">
+                <div class="input-group">
+                    <input type="text" name="ign" class="form-control input-lg form-control-lg">
+                    <div class="input-group-append input-group-btn">
+                        <button class="btn btn-success btn-lg" type="submit">Continue<i class="fa fa-chevron-right ml-2" style="margin-left:10px;" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+            </div>
+</form>
+          <i class="fa-solid fa-circle-xmark"></i>
+        </div>
+
+        
+    </div>
+
+
+            </div>
+        </div>
+
+
+        
+    </div>
+
+</header>
+<script>
+    $(".loginLink").on("click", function(){
+        
+        $(".popup-login").css("display","block");
+    });  
+    
+    $(".popup-login .fa-circle-xmark").on("click",function(){
+         $(".popup-login").css("display","none");
+    });
+    
+    var snowMax = 50;
+
+// Snowflake Colours
+var snowColor = ["#DDD", "#EEE"];
+
+// Snow Entity
+var snowEntity = "&#x2022;";
+
+// Falling Velocity
+var snowSpeed = 0.75;
+
+// Minimum Flake Size
+var snowMinSize = 8;
+
+// Maximum Flake Size
+var snowMaxSize = 24;
+
+// Refresh Rate (in milliseconds)
+var snowRefresh = 50;
+
+// Additional Styles
+var snowStyles = "cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none; user-select: none;";
+
+/*
+// End of Configuration
+// ----------------------------------------
+// Do not modify the code below this line
+*/
+
+var snow = [],
+	pos = [],
+	coords = [],
+	lefr = [],
+	marginBottom,
+	marginRight;
+
+function randomise(range) {
+	rand = Math.floor(range * Math.random());
+	return rand;
+}
+
+function initSnow() {
+	var snowSize = snowMaxSize - snowMinSize;
+	marginBottom = document.body.scrollHeight - 5;
+	marginRight = document.body.clientWidth - 15;
+
+	for (i = 0; i <= snowMax; i++) {
+		coords[i] = 0;
+		lefr[i] = Math.random() * 15;
+		pos[i] = 0.03 + Math.random() / 10;
+		snow[i] = document.getElementById("flake" + i);
+		snow[i].style.fontFamily = "inherit";
+		snow[i].size = randomise(snowSize) + snowMinSize;
+		snow[i].style.fontSize = snow[i].size + "px";
+		snow[i].style.color = snowColor[randomise(snowColor.length)];
+		snow[i].style.zIndex = 50;
+		snow[i].sink = snowSpeed * snow[i].size / 5;
+		snow[i].posX = randomise(marginRight - snow[i].size);
+		snow[i].posY = randomise(2 * marginBottom - marginBottom - 2 * snow[i].size);
+		snow[i].style.left = snow[i].posX + "px";
+		snow[i].style.top = snow[i].posY + "px";
+	}
+
+	moveSnow();
+}
+
+function resize() {
+	marginBottom = document.body.scrollHeight - 5;
+	marginRight = document.body.clientWidth - 15;
+}
+
+function moveSnow() {
+	for (i = 0; i <= snowMax; i++) {
+		coords[i] += pos[i];
+		snow[i].posY += snow[i].sink;
+		snow[i].style.left = snow[i].posX + lefr[i] * Math.sin(coords[i]) + "px";
+		snow[i].style.top = snow[i].posY + "px";
+
+		if (snow[i].posY >= marginBottom - 2 * snow[i].size || parseInt(snow[i].style.left) > (marginRight - 3 * lefr[i])) {
+			snow[i].posX = randomise(marginRight - snow[i].size);
+			snow[i].posY = 0;
+		}
+	}
+
+	setTimeout("moveSnow()", snowRefresh);
+}
+
+for (i = 0; i <= snowMax; i++) {
+	document.write("<span id='flake" + i + "' style='" + snowStyles + "position:absolute;top:-" + snowMaxSize + "'>" + snowEntity + "</span>");
+}
+
+window.onresize = resize;
+window.onload = initSnow;
+
+</script>

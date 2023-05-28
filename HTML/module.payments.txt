@@ -1,0 +1,37 @@
+<div class="widget p-4 p-md-5 border-top module">
+    <h4><span><i class="fa-solid fa-user-ninja"></i></span>{{ module.header }}</h4>
+    <ul class="list-unstyled recent-payments">
+        {% for payment in module.payments %}
+        <li>
+            <div class="avatar float-left mr-2">
+                <img src="{{ payment.skin }}" width="32">
+            </div>
+            <div class="info text-heading-font">
+                <div class="ign">
+                    <strong>{{ payment.ign }}</strong>
+
+                    {% if module.displayPackage %}
+                    - {{ payment.name[:20] }}
+                    {% endif %}
+
+                    {% if module.displayTime %}
+                    <br /><small>{{ payment.time }}</small>
+                    {% endif %}
+
+                    {% if module.displayPrice %}
+                    - <strong>{{ payment.price|money }} {{ payment.currency }}</strong>
+                    {% endif %}
+
+                    {% if module.displayPackage and module.displayPrice %}
+
+                    {% endif %}
+
+
+                </div>
+            </div>
+        </li>
+        {% else %}
+        {{ __("No recent payments to display.") }}
+        {% endfor %}
+    </ul>
+</div>

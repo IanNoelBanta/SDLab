@@ -1,0 +1,138 @@
+{% if module.display %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<div class="widget p-4 p-md-5 border-top module">
+    <h4><span><i class="fa-solid fa-user-ninja"></i></span>{{ module.header }}</h4>
+    <div class="package card bg-transparent border-0">
+
+        <h5>{{ module.package.name }}</h5>
+
+        <a href="/package/{{ module.package.id }}">
+            <img src="{{ module.package.image.url }}" class="card-img-top toggle-tooltip {% if module.package.image.borderless %}img-rounded{% else %}img-thumbnail{% endif %}"  title="{{ __("Click for more details") }}" />
+        </a>
+
+        <div class="card-footer px-0 py-3 bg-transparent">
+
+            {% if module.package.customPrice == false and module.package.price > 0 %}
+                <strong class="h4 mb-0">
+                    {% if module.package.discount.applied %}
+                    <del class="text-danger small font-weight-bold">{{ module.package.discount.original|money }}</del>
+                    {% endif %}
+                    {{ module.package.price|money }} <small>{{ module.package.currency }}</small>
+                </strong>
+            {% endif %}
+
+            {% if module.package.basket %}
+                <a href="/checkout/packages/remove/{{ module.package.id }}" class="btn btn-primary float-right">{{ __("Remove") }}</a>
+            {% else %}
+                <a class="btn btn-primary view-package">{{ __("View") }} </a>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+<div id="content-outer" class="container px-0 px-lg-3 popup-view" style="display:none">
+    <section class="bg-white p-0 row no-gutters border-left border-right">
+        <div class="col-12">
+            <div class="p-xl-5 p-4">
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <img src="{{module.package.image.url }}" class="img-fluid toggle-tooltip {% if module.package.image.borderless %}img-rounded{% else %}img-thumbnail{% endif %}" />
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="package_summary mt-3">
+                            <div class="container-fluid p-4 p-md-0">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <strong class="h2 mb-0">
+                                            {% if module.package.customPrice %}
+                                            <b>{{ __("You decide how much to pay.") }}</b>
+                                            {% elseif module.package.price == 0.00 %}
+                                            <b>{{ __("This item is free.") }}</b>
+                                            {% else %}
+                                            {% if module.package.discount.applied %}
+                                            <del class="text-danger small font-weight-bold">{{ package.discount.original|money }}</del>
+                                            {% endif %}
+                                            <b>{{ module.package.price|money }} <small>{{ module.package.currency }}</small></b>
+                                            {% endif %}
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <div {% if module.package.purchasable==false %}data-toggle="tooltip" title="{{ module.package.reason }}" {% endif %}>
+                                            {% if module.package.basket %}
+                                                <a href="/checkout/packages/remove/{{ module.package.id }}" class="btn btn-primary btn-lg gift-weight mb-2">{{
+                                                    __("Remove") }}</a>
+
+                                            {% else %}
+
+                                                {% if module.package.type != "single" %}
+                                                <a href="/checkout/packages/add/{{ module.package.id }}/subscribe" class="btn btn-success btn-lg gift-weight mb-2"
+                                                   {% if module.package.purchasable==false %}disabled{% endif %}>{{ __("Subscribe") }}</a>
+                                                {% endif %}
+
+                                                {% if module.package.type != "subscription" %}
+                                                <a href="/checkout/packages/add/{{ package.id }}/single" class="btn btn-primary btn-lg gift-weight mb-2" {% if
+                                                   module.package.purchasable==false %}disabled{% endif %}>{{ __("Add to basket") }} <i class="fas fa-plus ml-2"></i> </a>
+                                                {% endif %}
+
+                                            {% endif %}
+                                        </div>
+
+                                        {% if module.package.disable_gifting == false and module.package.storeGiftingEnabled %}
+                                        <a href="#" data-toggle="collapse" data-target="#giftFields"
+                                                aria-expanded="false" aria-controls="giftFields" class="btn btn-secondary btn-lg gift-weight btn-gift">{{ __("Gift this package") }} <i class="fas fa-chevron-down ml-2"></i>
+                                        </a>
+                                        {% endif %}
+
+                                        {% if module.package.disable_gifting == false and module.package.storeGiftingEnabled %}
+                                        <div class="collapse gift-fields" id="giftFields">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <form name="gift-form" method="get" action="/checkout/packages/add/{{ module.package.id }}/single/gift">
+                                                        <div class="input-group mt-3">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                                            </div>
+                                                            <input type="text" name="username" placeholder="{{ __("Enter a username to gift this package to") }}"
+                                                            class="form-control" />
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-primary btn-sm" type="submit">Gift <i class="fas fa-chevron-right ml-1"></i></button>
+                                                            </div>
+
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        {{ module.package.description|raw }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+        <i class="fa-solid fa-circle-xmark"></i>
+
+</div>
+<script>
+$(".view-package").on("click",function(){
+    $(".popup-view").css("display","block");
+});
+    $(".popup-view .fa-circle-xmark").on("click",function(){
+         $(".popup-view").css("display","none");
+    });
+    
+    
+</script>
+
+{% endif %}
